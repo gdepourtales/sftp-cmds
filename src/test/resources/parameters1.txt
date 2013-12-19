@@ -1,0 +1,17 @@
+--command
+download
+--local-folder
+.
+--local
+test.zip
+--remote-host
+localhost
+--user
+upload
+--password
+password
+--remote-folder
+upload
+--remote
+remote.zip
+--no-host-check
