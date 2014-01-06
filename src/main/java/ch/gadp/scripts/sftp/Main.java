@@ -79,13 +79,6 @@ public class Main {
             return null;
         }
 
-        if (!line.hasOption(COMMAND)) {
-            printHelp();
-            System.exit(1);
-        }
-
-        String commandName = line.getOptionValue(COMMAND);
-
         if (line.hasOption(CONFIG_FILE)) {
             StringWriter sw = new StringWriter();
             FileReader fr = new FileReader(line.getOptionValue(CONFIG_FILE));
@@ -96,6 +89,13 @@ public class Main {
             }
             line = parser.parse(options, sw.getBuffer().toString().split("\\s"));
         }
+
+        if (!line.hasOption(COMMAND)) {
+            printHelp();
+            System.exit(1);
+        }
+
+        String commandName = line.getOptionValue(COMMAND);
 
         SFTPTask command = null;
         if (commandName.equals("download")) {
