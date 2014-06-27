@@ -29,6 +29,7 @@ public class Main {
     private static final String OVERWRITE = "overwrite";
     private static final String REGEX = "regex";
     private static final String NO_HOST_CHECK = "no-host-check";
+    private static final String FAIL_SAFE = "fail-safe";
 
 
     private static Options getOptions() {
@@ -58,6 +59,7 @@ public class Main {
         options.addOption("w", OVERWRITE, false, "overwrite existing file if exists. If not specified the transfer is cancelled if the target file already exists");
         options.addOption("x", REGEX, false, "if mentioned, the source should be handled as regular expression, potentially dowloading/uploading several files");
         options.addOption("y", NO_HOST_CHECK, false, "do not check hosts certificates");
+        options.addOption("f", FAIL_SAFE, false, "fail safe if remote directory does not exist");
 
         return options;
     }
@@ -113,7 +115,8 @@ public class Main {
                     line.getOptionValue(ARCHIVE, null),
                     line.hasOption(OVERWRITE),
                     line.hasOption(REGEX),
-                    line.hasOption(NO_HOST_CHECK)
+                    line.hasOption(NO_HOST_CHECK),
+                    line.hasOption(FAIL_SAFE)
             );
         }
         return command;

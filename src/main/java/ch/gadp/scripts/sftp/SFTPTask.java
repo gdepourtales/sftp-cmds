@@ -1,12 +1,8 @@
 package ch.gadp.scripts.sftp;
 
 import com.jcraft.jsch.*;
-import org.apache.commons.cli.*;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringWriter;
 
 /**
  * Created by guy on 18.12.13.
@@ -15,21 +11,21 @@ abstract class SFTPTask {
 
     private String localFolder;
     private String localFilename;
-
     private String remoteHost;
+
     private int port;
     private String user;
     private String password;
-
     private String remoteFolder;
-    private String remoteFilename;
 
+    private String remoteFilename;
     private boolean deleteAfterTransfer = false;
+
     private String archiveAfterTransfer = null;
     private boolean overwriteExistingTarget = false;
     private boolean regex = false;
     private boolean noHostCheck = false;
-
+    private boolean failSafe = false;
 
     protected Session getSession() throws JSchException {
         JSch jsch = new JSch();
@@ -43,6 +39,7 @@ abstract class SFTPTask {
 
         return session;
     }
+
 
     protected ChannelSftp getSFTPChannel() throws JSchException {
         Session session = this.getSession();
@@ -66,12 +63,12 @@ abstract class SFTPTask {
 
     }
 
-
     protected SFTPTask(String localFolder, String localFilename, String remoteHost, String user, String password, String remoteFolder, String remoteFilename) {
-        this(localFolder, localFilename, remoteHost, 22, user, password, remoteFolder, remoteFilename, false, null, false, false, false);
+        this(localFolder, localFilename, remoteHost, 22, user, password, remoteFolder, remoteFilename, false, null, false, false, false, false);
     }
 
-    protected SFTPTask(String localFolder, String localFilename, String remoteHost, int port, String user, String password, String remoteFolder, String remoteFilename, boolean deleteAfterTransfer, String archiveAfterTransfer, boolean overwriteExistingTarget, boolean regex, boolean noHostCheck) {
+
+    protected SFTPTask(String localFolder, String localFilename, String remoteHost, int port, String user, String password, String remoteFolder, String remoteFilename, boolean deleteAfterTransfer, String archiveAfterTransfer, boolean overwriteExistingTarget, boolean regex, boolean noHostCheck, boolean failSafe) {
         this.localFolder = localFolder;
         this.localFilename = localFilename;
         this.remoteHost = remoteHost;
@@ -85,6 +82,7 @@ abstract class SFTPTask {
         this.overwriteExistingTarget = overwriteExistingTarget;
         this.regex = regex;
         this.noHostCheck = noHostCheck;
+        this.failSafe = failSafe;
     }
 
     public String getLocalFolder() {
@@ -189,5 +187,13 @@ abstract class SFTPTask {
 
     public void setNoHostCheck(boolean noHostCheck) {
         this.noHostCheck = noHostCheck;
+    }
+
+    public boolean isFailSafe() {
+        return failSafe;
+    }
+
+    public void setFailSafe(boolean failSafe) {
+        this.failSafe = failSafe;
     }
 }
