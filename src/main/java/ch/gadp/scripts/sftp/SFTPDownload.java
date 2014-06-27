@@ -3,11 +3,16 @@ package ch.gadp.scripts.sftp;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
+
+import static com.jcraft.jsch.ChannelSftp.SSH_FX_NO_SUCH_FILE;
 
 /**
  * Created by guy on 18.12.13.
@@ -38,7 +43,16 @@ public class SFTPDownload extends SFTPTask {
 
     @Override
     public void runCommandOnChannel(ChannelSftp channel) throws SftpException, FileNotFoundException {
-        channel.cd(this.getRemoteFolder());
+        try {
+            channel.cd(this.getRemoteFolder());
+        } catch (SftpException e) {
+            if(e.id == SSH_FX_NO_SUCH_FILE && isFailSafe()) {
+                System.out.println("Remote Folder '" + getRemoteFolder() + "' does not exist but command fails safe.");
+                return;
+            }
+            throw e;
+        }
+
         List<ChannelSftp.LsEntry> fileNames = this.getFiles(channel);
 
         String localFilename = this.getLocalFilename();
@@ -93,8 +107,9 @@ public class SFTPDownload extends SFTPTask {
                            String archiveAfterTransfer,
                            boolean overwriteExistingTarget,
                            boolean regex,
-                           boolean noHostCheck) {
-        super(localFolder, localFilename, remoteHost, port, user, password, remoteFolder, remoteFilename, deleteAfterTransfer, archiveAfterTransfer, overwriteExistingTarget, regex, noHostCheck);
+                           boolean noHostCheck,
+                           boolean failSafe) {
+        super(localFolder, localFilename, remoteHost, port, user, password, remoteFolder, remoteFilename, deleteAfterTransfer, archiveAfterTransfer, overwriteExistingTarget, regex, noHostCheck, failSafe);
     }
 
 

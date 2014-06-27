@@ -1,7 +1,6 @@
 package ch.gadp.scripts.sftp;
 
 import com.jcraft.jsch.*;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.NamedFactory;
@@ -22,9 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static com.jcraft.jsch.ChannelSftp.SSH_FX_NO_SUCH_FILE;
+import static org.junit.Assert.*;
 
 /**
  * Created by guy on 18.12.13.
@@ -109,7 +107,8 @@ public class SFTPDownloadTest implements PasswordAuthenticator {
                 null,
                 false,
                 false,
-                true
+                true,
+                false
         );
         command.execute();
         File f = new File(".", "test.file");
@@ -136,7 +135,8 @@ public class SFTPDownloadTest implements PasswordAuthenticator {
                 null,
                 false,
                 false,
-                true
+                true,
+                false
         );
         command.execute();
         assertTrue(f.exists());
@@ -163,7 +163,8 @@ public class SFTPDownloadTest implements PasswordAuthenticator {
                 null,
                 true,
                 false,
-                true
+                true,
+                false
         );
         command.execute();
         assertTrue(f.exists());
@@ -187,7 +188,8 @@ public class SFTPDownloadTest implements PasswordAuthenticator {
                 null,
                 false,
                 true,
-                true
+                true,
+                false
         );
         command.execute();
         File f1 = new File(".", "test1.file");
@@ -217,7 +219,8 @@ public class SFTPDownloadTest implements PasswordAuthenticator {
                 null,
                 false,
                 false,
-                true
+                true,
+                false
         );
         command.execute();
         File f = new File(".", "test.file");
@@ -246,7 +249,8 @@ public class SFTPDownloadTest implements PasswordAuthenticator {
                 ARCHIVE_FOLDER,
                 false,
                 false,
-                true
+                true,
+                false
         );
         command.execute();
         File f = new File(".", "test.file");
@@ -262,6 +266,61 @@ public class SFTPDownloadTest implements PasswordAuthenticator {
         f.delete();
     }
 
+    @Test(expected = SftpException.class)
+    public void should_throw_exception_when_remote_directory_does_not_exist() throws Exception {
+        // Given
+        String unknownFolder = "unknown";
+        boolean failSafe = false;
+        SFTPDownload command = new SFTPDownload(
+                ".",
+                "test.file",
+                HOST,
+                PORT,
+                USER,
+                PASSWORD,
+                unknownFolder,
+                "test1.file",
+                false,
+                null,
+                false,
+                false,
+                true,
+                failSafe
+        );
 
+        // When
+        try {
+            command.execute();
+        } catch(SftpException e) {
+            assertEquals(SSH_FX_NO_SUCH_FILE, e.id);
+            throw e;
+        }
+    }
+
+    @Test
+    public void should_fail_safe_when_remote_directory_does_not_exist() throws Exception {
+        // Given
+        String unknownFolder = "unknown";
+        boolean failSafe = true;
+        SFTPDownload command = new SFTPDownload(
+                ".",
+                "test.file",
+                HOST,
+                PORT,
+                USER,
+                PASSWORD,
+                unknownFolder,
+                "test1.file",
+                false,
+                null,
+                false,
+                false,
+                true,
+                failSafe
+        );
+
+        // When
+        command.execute();
+    }
 
 }
