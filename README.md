@@ -34,4 +34,6 @@ Initial version  only has "download" command
                                 regular expression, potentially
                                 dowloading/uploading several files
      -y,--no-host-check         do not check hosts certificates
+     -f,--fail-safe             fail safe when remote directory does not
+                                exist
 

@@ -1,7 +1,9 @@
 package ch.gadp.scripts.sftp;
 
-import junit.framework.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by guy on 18.12.13.
@@ -14,14 +16,14 @@ public class MainTest {
                 "--command", "download", "--config", path
         });
 
-        Assert.assertEquals(".", task.getLocalFolder());
-        Assert.assertEquals("test.zip", task.getLocalFilename());
-        Assert.assertEquals("localhost", task.getRemoteHost());
-        Assert.assertEquals("upload", task.getUser());
-        Assert.assertEquals("password", task.getPassword());
-        Assert.assertEquals("upload", task.getRemoteFolder());
-        Assert.assertEquals("remote.zip", task.getRemoteFilename());
-        Assert.assertTrue(task.isNoHostCheck());
-
+        assertEquals(".", task.getLocalFolder());
+        assertEquals("test.zip", task.getLocalFilename());
+        assertEquals("localhost", task.getRemoteHost());
+        assertEquals("upload", task.getUser());
+        assertEquals("password", task.getPassword());
+        assertEquals("upload", task.getRemoteFolder());
+        assertEquals("remote.zip", task.getRemoteFilename());
+        assertTrue(task.isNoHostCheck());
+        assertTrue(task.isFailSafe());
     }
 }
